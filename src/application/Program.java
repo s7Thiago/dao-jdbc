@@ -1,6 +1,7 @@
 package application;
 
 import db.DB;
+import db.DbException;
 
 import java.sql.*;
 import java.text.ParseException;
@@ -9,51 +10,33 @@ import java.text.SimpleDateFormat;
 public class Program {
     public static void main(String[] args) {
 
-//        Inserting data on seller table
-        Connection connection;
+//        Updating data on database
+        Connection conn;
+
         PreparedStatement st = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
         try {
-            connection = DB.getConnection(); // Opening database connection
+            conn = DB.getConnection();
 
-//            Insertion command
-            st = connection.prepareStatement(
-                    "insert into seller " +
-                            "(Name, Email, BirthDate, BaseSalary, DepartmentID) " +
-                            "Values " +
-                            "(?, ?, ?, ?, ?)", // 'Placeholders' for the values to be inserted later
-                    Statement.RETURN_GENERATED_KEYS
-            );
+            st = conn.prepareStatement(
+                    "update seller " +
+                            "set BaseSalary = BaseSalary + ? " +
+                            "where " +
+                            "(DepartmentId = ?)");
 
-            //                    Inserting the respective data according the prepared statement
-            st.setString(1, "Carl Yellow");
-            st.setString(2, "carl@gmail.com");
-            st.setDate(3, new java.sql.Date(sdf.parse("22/04/1995").getTime()));
-            st.setDouble(4, 3000.00);
-            st.setInt(5, 4);
+//            Setting respective values
+            st.setDouble(1,200.00);
+            st.setInt(2, 2);
 
             int rowsAffected = st.executeUpdate();
 
-            if (rowsAffected > 0) {
-                ResultSet rs = st.getGeneratedKeys();
+            System.out.println("Done!Rows affected: " + rowsAffected);
 
-                while (rs.next()) {
-                    int id = rs.getInt(1); // We hava just 1 register being added to database. Because of that we are only taking the starting position
-                    System.out.println("Done! the generated id was " + id);
-                }
-            } else {
-                System.out.println("No rows affected :( ");
-            }
-
-
-        } catch (SQLException | ParseException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
         } finally {
-//            Closing used resources
             DB.closeStatement(st);
             DB.closeConnection();
-
         }
     }
 }
