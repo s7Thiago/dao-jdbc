@@ -2,10 +2,7 @@ package application;
 
 import db.DB;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -37,6 +34,17 @@ public class Program {
             st.setInt(5, 4);
 
             int rowsAffected = st.executeUpdate();
+
+            if (rowsAffected > 0) {
+                ResultSet rs = st.getGeneratedKeys();
+
+                while (rs.next()) {
+                    int id = rs.getInt(1); // We hava just 1 register being added to database. Because of that we are only taking the starting position
+                    System.out.println("Done! the generated id was " + id);
+                }
+            } else {
+                System.out.println("No rows affected :( ");
+            }
 
 
         } catch (SQLException | ParseException e) {
