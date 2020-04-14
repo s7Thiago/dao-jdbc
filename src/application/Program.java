@@ -3,35 +3,48 @@ package application;
 import db.DB;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class Program {
     public static void main(String[] args) {
-        Connection conn;
-        Statement statement = null;
-        ResultSet resultSet = null;
+
+//        Inserting data on seller table
+        Connection connection;
+        PreparedStatement st = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
         try {
-//            Creating the database connection and executing query on department table
-            conn = DB.getConnection();
-            statement = conn.createStatement();
+            connection = DB.getConnection(); // Opening database connection
 
-            resultSet = statement.executeQuery("select * from department"); // Storing query result
+//            Insertion command
+            st = connection.prepareStatement(
+                    "insert into seller " +
+                            "(Name, Email, BirthDate, BaseSalary, DepartmentID) " +
+                            "Values " +
+                            "(?, ?, ?, ?, ?)" // 'Placeholders' for the values to be inserted later
+            );
 
-//            traversing the department table data while has next row
-            while (resultSet.next()) {
-                System.out.println(resultSet.getInt("Id") + ": " + resultSet.getString("Name"));
-            }
+            //                    Inserting the respective data according the prepared statement
+            st.setString(1, "Carl Yellow");
+            st.setString(2, "carl@gmail.com");
+            st.setDate(3, new java.sql.Date(sdf.parse("22/04/1995").getTime()));
+            st.setDouble(4, 3000.00);
+            st.setInt(5, 4);
 
-        } catch (SQLException e) {
+            int rowsAffected = st.executeUpdate();
+
+            System.out.println("Done! rows affected: " + rowsAffected);
+
+        } catch (SQLException | ParseException e) {
             e.printStackTrace();
-        }
-        finally {
-            DB.closeStatement(statement);
-            DB.closeResultSet(resultSet);
+        } finally {
+//            Closing used resources
+            DB.closeStatement(st);
             DB.closeConnection();
+
         }
     }
 }
