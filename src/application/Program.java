@@ -1,12 +1,11 @@
 package application;
 
 import db.DB;
-import db.DbException;
 import db.DbIntegrityException;
 
-import java.sql.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class Program {
     public static void main(String[] args) {
