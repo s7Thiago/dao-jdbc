@@ -5,6 +5,7 @@ import db.DB;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -24,7 +25,8 @@ public class Program {
                     "insert into seller " +
                             "(Name, Email, BirthDate, BaseSalary, DepartmentID) " +
                             "Values " +
-                            "(?, ?, ?, ?, ?)" // 'Placeholders' for the values to be inserted later
+                            "(?, ?, ?, ?, ?)", // 'Placeholders' for the values to be inserted later
+                    Statement.RETURN_GENERATED_KEYS
             );
 
             //                    Inserting the respective data according the prepared statement
@@ -36,7 +38,6 @@ public class Program {
 
             int rowsAffected = st.executeUpdate();
 
-            System.out.println("Done! rows affected: " + rowsAffected);
 
         } catch (SQLException | ParseException e) {
             e.printStackTrace();
