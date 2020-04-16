@@ -12,6 +12,8 @@ import java.util.Scanner;
 public class Program {
     public static void main(String[] args) {
 
+        Scanner scanner = new Scanner(System.in);
+
         System.out.println("====== TEST 1: Seller findById ======");
         SellerDao sellerDao = DaoFactory.createSellerDao();
         Seller seller = sellerDao.findById(3);
@@ -44,7 +46,12 @@ public class Program {
 
         System.out.println("\n\n====== TEST 6: Seller delete ======");
         System.out.println("Enter id for delete test: ");
-        int id = new Scanner(System.in).nextInt();
+        int id = scanner.nextInt();
+        sellerDao.deleteById(id);
+        System.out.println("Delete completed");
+
+        scanner.close();
+
         
     }
 }
